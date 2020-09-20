@@ -9,7 +9,7 @@ public class RandomString {
 
     RandomString(){
         simbolsMassiv = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-        stringBuilder = new StringBuilder(20);
+        stringBuilder = new StringBuilder(6);
         random = new Random();
     }
 
