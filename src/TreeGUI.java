@@ -14,7 +14,8 @@ public class TreeGUI extends JFrame {
     private JPanel buttonsPane;
     private JTextField stringForAdd;
     private JButton buttonBalance;
-    private JButton addButton;
+    private JButton addRandomButton;
+    private JButton addStringButton;
     private JButton deleteButtonForNumber;
     private JButton deleteButtonForValue;
 
@@ -45,11 +46,11 @@ public class TreeGUI extends JFrame {
             RandomString randomString = new RandomString();
             String string = randomString.getResultString();
             binaryTree.add(string);
-            masForValue.add(string);
         }
         binaryTree.traverseInOrder(binaryTree.root, 0);
         binaryTree.setArrayTops(binaryTree.root);
         setMasForNumber();
+        setMasForValue();
         comboBoxForNumber = new JComboBox<>(masForNumber);
         comboBoxForValue = new JComboBox<>(masForValue);
 
@@ -62,40 +63,50 @@ public class TreeGUI extends JFrame {
         contentPane.add(drawer);
 
         buttonsPane = new JPanel();
-        buttonsPane.setSize(200,500);
-        buttonsPane.setLayout(new BoxLayout(buttonsPane, BoxLayout.Y_AXIS));
+        buttonsPane.setPreferredSize(new Dimension(200, getHeight()));
+        /*buttonsPane.setLayout(new BoxLayout(buttonsPane, BoxLayout.Y_AXIS));
         buttonsPane.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+*/
+        buttonsPane.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
 
-        stringForAdd = new JTextField(4);
+        stringForAdd = new JTextField();
 
         buttonBalance = new JButton();
         buttonBalance.setText("Балансировать");
         buttonBalance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contentPane.removeAll();
                 binaryTree.root = binaryTree.getBalance(0,binaryTree.sizeBinaryTree-1);
-                binaryTree.updateListTops(binaryTree.root);
-                drawer = new DrawTree(binaryTree.root);
-                contentPane.add(drawer);
-                revalidate();
-                repaint();
+                binaryTree.updateListTops();
+                updateContentPane();
             }
         });
 
-        addButton = new JButton();
-        addButton.setText("Добавить");
-        addButton.addActionListener(new ActionListener() {
+        addStringButton = new JButton();
+        addStringButton.setText("Добавить");
+        addStringButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contentPane.removeAll();
+                String stringFromLabel = stringForAdd.getText();
+                binaryTree.add(stringFromLabel);
+                binaryTree.updateListTops();
+                updateContentPane();
+            }
+        });
+
+        addRandomButton = new JButton();
+        addRandomButton.setText("Добавить случайно сгенерированную строку");
+        addRandomButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 RandomString randomString = new RandomString();
                 binaryTree.add(randomString.getResultString());
-                binaryTree.updateListTops(binaryTree.root);
-                drawer = new DrawTree(binaryTree.root);
-                contentPane.add(drawer);
-                revalidate();
-                repaint();
+                binaryTree.updateListTops();
+                updateContentPane();
             }
         });
 
@@ -104,13 +115,9 @@ public class TreeGUI extends JFrame {
         deleteButtonForNumber.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contentPane.removeAll();
-                binaryTree.root = binaryTree.deleteNode(binaryTree.root,binaryTree.getValueFromArray(comboBoxForNumber.getSelectedIndex()));
-                binaryTree.updateListTops(binaryTree.root);
-                drawer = new DrawTree(binaryTree.root);
-                contentPane.add(drawer);
-                revalidate();
-                repaint();
+                binaryTree.delete(binaryTree.getValueFromArray(comboBoxForNumber.getSelectedIndex()));
+                binaryTree.updateListTops();
+                updateContentPane();
             }
         });
 
@@ -119,23 +126,44 @@ public class TreeGUI extends JFrame {
         deleteButtonForValue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contentPane.removeAll();
-                binaryTree.root = binaryTree.deleteNode(binaryTree.root,comboBoxForValue.getSelectedItem());
-                binaryTree.updateListTops(binaryTree.root);
-                drawer = new DrawTree(binaryTree.root);
-                contentPane.add(drawer);
-                revalidate();
-                repaint();
+                binaryTree.delete(comboBoxForValue.getSelectedItem());
+                binaryTree.updateListTops();
+                updateContentPane();
             }
         });
 
-        buttonsPane.add(stringForAdd);
-        buttonsPane.add(addButton);
-        buttonsPane.add(comboBoxForNumber);
-        buttonsPane.add(deleteButtonForNumber);
-        buttonsPane.add(comboBoxForValue);
-        buttonsPane.add(deleteButtonForValue);
-        buttonsPane.add(buttonBalance);
+        c.gridx = 0;
+        c.gridwidth = 3;
+        c.gridy = 0;
+        buttonsPane.add(stringForAdd,c);
+        c.gridx = 0;
+        c.gridwidth = 3;
+        c.gridy = 1;
+        buttonsPane.add(addStringButton,c);
+        c.gridx = 0;
+        c.gridwidth = 3;
+        c.gridy = 2;
+        buttonsPane.add(addRandomButton,c);
+        c.gridx = 0;
+        c.gridwidth = 1;
+        c.gridy = 3;
+        buttonsPane.add(comboBoxForNumber,c);
+        c.gridx = 1;
+        c.gridwidth = 2;
+        c.gridy = 3;
+        buttonsPane.add(deleteButtonForNumber,c);
+        c.gridx = 0;
+        c.gridwidth = 2;
+        c.gridy = 4;
+        buttonsPane.add(comboBoxForValue,c);
+        c.gridx = 2;
+        c.gridwidth = 2;
+        c.gridy = 4;
+        buttonsPane.add(deleteButtonForValue,c);
+        c.gridx = 0;
+        c.gridwidth = 3;
+        c.gridy = 7;
+        buttonsPane.add(buttonBalance,c);
 
         container.add(contentPane);
         container.add(buttonsPane, BorderLayout.EAST);
@@ -149,5 +177,33 @@ public class TreeGUI extends JFrame {
         }
     }
 
+    public void setMasForValue(){
+        masForValue = new Vector<>();
+        for(int i = 0; i < binaryTree.sizeBinaryTree; i++){
+            masForValue.add(binaryTree.getValueFromArray(i).toString());
+        }
+    }
+
+    public void updateContentPane(){
+        this.contentPane.removeAll();
+        updateDataForComboBox();
+        drawer = new DrawTree(binaryTree.root);
+        contentPane.add(drawer);
+        revalidate();
+        repaint();
+    }
+
+    public void updateDataForComboBox(){
+        setMasForValue();
+        setMasForNumber();
+        comboBoxForValue.removeAllItems();
+        comboBoxForNumber.removeAllItems();
+        for(int i = 0; i < masForValue.size(); i++){
+            comboBoxForValue.insertItemAt(masForValue.get(i),i);
+            comboBoxForNumber.insertItemAt(i+1,i);
+        }
+        comboBoxForNumber.setSelectedIndex(0);
+        comboBoxForValue.setSelectedIndex(0);
+    }
 
 }

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class BinaryTree<T>{
 
@@ -58,6 +57,11 @@ public class BinaryTree<T>{
         return current;
     }
 
+    public void delete(T value){
+        root = deleteNode(root, value);
+        sizeBinaryTree--;
+    }
+
     private T findSmallestValue(Node root){
         return root.left == null ? (T) root.value : findSmallestValue(root.left);
     }
@@ -94,9 +98,9 @@ public class BinaryTree<T>{
         return newNode;
     }
 
-    public void updateListTops(Node node){
+    public void updateListTops(){
         this.arrayTops = new ArrayList<>();
-        setArrayTops(node);
+        setArrayTops(root);
     }
 
     public T getValueFromArray(int number){
