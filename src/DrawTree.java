@@ -1,6 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Класс отрисовки связей между узлами дерева
+ * node - узел дерева
+ */
 public class DrawTree extends JPanel {
     public Node node;
 

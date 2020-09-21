@@ -1,5 +1,8 @@
 import java.util.Random;
 
+/**
+ * Класс рандомно сгенерированной строки
+ */
 public class RandomString {
 
     char[] simbolsMassiv;

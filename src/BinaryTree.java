@@ -1,5 +1,11 @@
 import java.util.ArrayList;
 
+/**
+ * Класс бинарного дерева с основными методами
+ * root - корень дерева
+ * sizeBinaryTree - резмер дерева
+ * arrayTops - массив вершин
+ */
 public class BinaryTree<T>{
 
     Node root;

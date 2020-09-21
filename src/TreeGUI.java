@@ -5,6 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+/**
+ * Класс отрисовки окна
+ * nameFunctional - лэйбл для наименование функционала
+ * contentPane - основная панель
+ * buttonsPane - панель для кнопок
+ * stringForAdd - текстовое поле для ввода строки для добавления
+ * buttonBalance - кнопка балансировки дерева
+ * addRandomButton - кнопка для добавления рандомной строки
+ * addStringButton - кнопка для добавлеия строки введенной пользователем
+ * deleteButtonForNumber - кнопка для удаления узла по логическому номеру
+ * deleteButtonForValue - кнопка для удаления узла по ключу
+ */
 public class TreeGUI extends JFrame {
 
     private BinaryTree binaryTree = new BinaryTree();

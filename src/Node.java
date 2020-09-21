@@ -1,3 +1,10 @@
+/**
+ * Класс вершины дерева
+ * value - ключ
+ * left - левый потомок
+ * right - правый потомок
+ * numberOfVertices - количество вершин у узла дерева
+ */
 public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 
     T value;
