@@ -9,7 +9,7 @@ public class TreeGUI extends JFrame {
 
     private BinaryTree binaryTree = new BinaryTree();
 
-
+    private JLabel nameFunctional;
     private JPanel contentPane;
     private JPanel buttonsPane;
     private JTextField stringForAdd;
@@ -51,12 +51,22 @@ public class TreeGUI extends JFrame {
         binaryTree.setArrayTops(binaryTree.root);
         setMasForNumber();
         setMasForValue();
+
+
+        nameFunctional = new JLabel("Функционал программы");
+        nameFunctional.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+        nameFunctional.setSize(new Dimension(180,30));
+        nameFunctional.setLocation(20,10);
+
         comboBoxForNumber = new JComboBox<>(masForNumber);
         comboBoxForValue = new JComboBox<>(masForValue);
-
+        comboBoxForNumber.setSize(new Dimension(40,30));
+        comboBoxForValue.setSize(new Dimension(80,30));
+        comboBoxForNumber.setLocation(10,220);
+        comboBoxForValue.setLocation(10,290);
         comboBoxForNumber.setEditable(true);
         comboBoxForValue.setEditable(true);
-        comboBoxForNumber.setMaximumRowCount(5);
+
         this.node = binaryTree.root;
 
         drawer = new DrawTree(this.node);
@@ -64,19 +74,14 @@ public class TreeGUI extends JFrame {
 
         buttonsPane = new JPanel();
         buttonsPane.setPreferredSize(new Dimension(200, getHeight()));
-        /*buttonsPane.setLayout(new BoxLayout(buttonsPane, BoxLayout.Y_AXIS));
-        buttonsPane.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
-*/
-        buttonsPane.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 1;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
+
+        buttonsPane.setLayout(null);
 
         stringForAdd = new JTextField();
+        stringForAdd.setSize(new Dimension(180,20));
+        stringForAdd.setLocation(20,50);
 
-        buttonBalance = new JButton();
-        buttonBalance.setText("Балансировать");
+        buttonBalance = createButton("Балансировать", 130,30,20,400);
         buttonBalance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,8 +91,7 @@ public class TreeGUI extends JFrame {
             }
         });
 
-        addStringButton = new JButton();
-        addStringButton.setText("Добавить");
+        addStringButton = createButton("Добавить", 130,30,60,80);
         addStringButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -98,8 +102,7 @@ public class TreeGUI extends JFrame {
             }
         });
 
-        addRandomButton = new JButton();
-        addRandomButton.setText("Добавить случайно сгенерированную строку");
+        addRandomButton = createButton("<html>Добавить<br>случайно<br>сгенерированную<br>кнопку</html>",130,80,60,120);
         addRandomButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,8 +113,7 @@ public class TreeGUI extends JFrame {
             }
         });
 
-        deleteButtonForNumber = new JButton();
-        deleteButtonForNumber.setText("Удалить по логическому номеру");
+        deleteButtonForNumber = createButton("<html>Удалить по<br>логическому номеру</html>",130,60,60,210);
         deleteButtonForNumber.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -121,8 +123,7 @@ public class TreeGUI extends JFrame {
             }
         });
 
-        deleteButtonForValue = new JButton();
-        deleteButtonForValue.setText("Удалить по ключу");
+        deleteButtonForValue = createButton("<html>Удалить по<br>ключу</html>", 90,60,100,280);
         deleteButtonForValue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -132,43 +133,22 @@ public class TreeGUI extends JFrame {
             }
         });
 
-        c.gridx = 0;
-        c.gridwidth = 3;
-        c.gridy = 0;
-        buttonsPane.add(stringForAdd,c);
-        c.gridx = 0;
-        c.gridwidth = 3;
-        c.gridy = 1;
-        buttonsPane.add(addStringButton,c);
-        c.gridx = 0;
-        c.gridwidth = 3;
-        c.gridy = 2;
-        buttonsPane.add(addRandomButton,c);
-        c.gridx = 0;
-        c.gridwidth = 1;
-        c.gridy = 3;
-        buttonsPane.add(comboBoxForNumber,c);
-        c.gridx = 1;
-        c.gridwidth = 2;
-        c.gridy = 3;
-        buttonsPane.add(deleteButtonForNumber,c);
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.gridy = 4;
-        buttonsPane.add(comboBoxForValue,c);
-        c.gridx = 2;
-        c.gridwidth = 2;
-        c.gridy = 4;
-        buttonsPane.add(deleteButtonForValue,c);
-        c.gridx = 0;
-        c.gridwidth = 3;
-        c.gridy = 7;
-        buttonsPane.add(buttonBalance,c);
+        buttonsPane.add(nameFunctional);
+        buttonsPane.add(stringForAdd);
+        buttonsPane.add(addStringButton);
+        buttonsPane.add(addRandomButton);
+        buttonsPane.add(comboBoxForNumber);
+        buttonsPane.add(deleteButtonForNumber);
+        buttonsPane.add(comboBoxForValue);
+        buttonsPane.add(deleteButtonForValue);
+        buttonsPane.add(buttonBalance);
 
         container.add(contentPane);
         container.add(buttonsPane, BorderLayout.EAST);
         setVisible(true);
     }
+
+
 
     public void setMasForNumber(){
         masForNumber = new Vector<>();
@@ -204,6 +184,14 @@ public class TreeGUI extends JFrame {
         }
         comboBoxForNumber.setSelectedIndex(0);
         comboBoxForValue.setSelectedIndex(0);
+    }
+
+
+    private JButton createButton(String text, int width, int height, int locX, int locY){
+        JButton button = new JButton(text);
+        button.setSize(width, height);
+        button.setLocation(locX, locY);
+        return button;
     }
 
 }
