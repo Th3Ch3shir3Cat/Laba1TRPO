@@ -3,6 +3,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.Vector;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Vector;
  * addStringButton - кнопка для добавлеия строки введенной пользователем
  * deleteButtonForNumber - кнопка для удаления узла по логическому номеру
  * deleteButtonForValue - кнопка для удаления узла по ключу
+ * downloadFromFile - кнопка загрузки из файла
  */
 public class TreeGUI extends JFrame {
 
@@ -30,6 +32,7 @@ public class TreeGUI extends JFrame {
     private JButton addStringButton;
     private JButton deleteButtonForNumber;
     private JButton deleteButtonForValue;
+    private JButton downloadFromFile;
 
     private Node node;
     private DrawTree drawer;
@@ -93,7 +96,7 @@ public class TreeGUI extends JFrame {
         stringForAdd.setSize(new Dimension(180,20));
         stringForAdd.setLocation(20,50);
 
-        buttonBalance = createButton("Балансировать", 130,30,20,400);
+        buttonBalance = createButton("Балансировать", 130,30,20,380);
         buttonBalance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -145,6 +148,18 @@ public class TreeGUI extends JFrame {
             }
         });
 
+        downloadFromFile = createButton("Загрузить из файла", 160,40,20,420);
+        downloadFromFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createDirectory();
+                File file = openDialogForChooseFile();
+                if(file != null){
+                    readFromFile(file);
+                }
+            }
+        });
+
         buttonsPane.add(nameFunctional);
         buttonsPane.add(stringForAdd);
         buttonsPane.add(addStringButton);
@@ -154,6 +169,7 @@ public class TreeGUI extends JFrame {
         buttonsPane.add(comboBoxForValue);
         buttonsPane.add(deleteButtonForValue);
         buttonsPane.add(buttonBalance);
+        buttonsPane.add(downloadFromFile);
 
         container.add(contentPane);
         container.add(buttonsPane, BorderLayout.EAST);
@@ -204,6 +220,59 @@ public class TreeGUI extends JFrame {
         button.setSize(width, height);
         button.setLocation(locX, locY);
         return button;
+    }
+
+    private void createDirectory(){
+        File newDirectory = new File("files");
+
+        if(!newDirectory.exists()){
+            boolean result = false;
+
+            try{
+                newDirectory.mkdir();
+                result = true;
+            }catch(SecurityException se){
+                System.out.println("Ошибка создания дирректории");
+            }
+            if(result){
+                System.out.println("Директория создана");
+            }
+        }
+    }
+
+    private File openDialogForChooseFile(){
+        JFileChooser fileChooser = new JFileChooser("files");
+        fileChooser.setDialogTitle("Выберите файл");
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = fileChooser.showSaveDialog(TreeGUI.this);
+        if(result == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            return file;
+        }
+        return null;
+    }
+
+    public void readFromFile(File file){
+        try {
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line = bufferedReader.readLine();
+            binaryTree = new BinaryTree();
+            while(line != null){
+                binaryTree.add(line);
+                line = bufferedReader.readLine();
+            }
+            binaryTree.traverseInOrder(binaryTree.root, 0);
+            binaryTree.setArrayTops(binaryTree.root);
+            setMasForNumber();
+            setMasForValue();
+            updateContentPane();
+            updateDataForComboBox();
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
     }
 
 }
